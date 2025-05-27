@@ -32,3 +32,19 @@ $ npm run build:mac
 # For Linux
 $ npm run build:linux
 ```
+
+### Running Ollama
+
+- install on windows
+- customize model location, port, for example:
+
+```
+$env:OLLAMA_HOST = "0.0.0.0:11444"
+$env:OLLAMA_MODELS = "S:\Ollama\models"
+```
+
+Find windows host address in wsl2 (WSL network access mode: NAT):
+
+```
+ip route show | grep -i default | awk '{ print $3 }'
+```

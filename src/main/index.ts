@@ -1,7 +1,8 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { electronApp, is, optimizer } from '@electron-toolkit/utils'
+import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
-import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { chat } from './llm'
 
 function createWindow(): void {
   // Create the browser window.
@@ -9,10 +10,12 @@ function createWindow(): void {
     width: 900,
     height: 670,
     show: false,
+    // frame: false,
+    titleBarStyle: 'hidden',
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
-      preload: join(__dirname, '../preload/index.js'),
+      preload: join(__dirname, '../preload/index.mjs'),
       sandbox: false
     }
   })
@@ -51,6 +54,18 @@ app.whenReady().then(() => {
 
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
+
+  // Handle chat requests with response
+  ipcMain.handle('chat', async (event, message) => {
+    console.log('Received chat message:', message)
+    try {
+      const response = await chat(message)
+      return { success: true, data: response }
+    } catch (error) {
+      console.error('Chat error:', error)
+      return { success: false, error: error instanceof Error ? error.message : String(error) }
+    }
+  })
 
   createWindow()
 

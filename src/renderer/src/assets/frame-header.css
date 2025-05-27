@@ -1,0 +1,38 @@
+#custom-title-bar {
+  width: 100%;
+  /* position: fixed; */
+  /* top: 0;
+  left: 0; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  background-color: #1d1d1d;
+  color: rgb(238, 238, 238);
+  padding: 0 10px;
+  user-select: none; /* Prevent text selection */
+  -webkit-app-region: drag; /* Makes the entire bar draggable */
+}
+
+#window-title {
+  /* Allow text selection if needed, but usually part of draggable area */
+  font-size: 1.5rem;
+}
+
+#window-controls button {
+  -webkit-app-region: no-drag; /* Makes buttons clickable, not draggable */
+  background: none;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+#window-controls button:hover {
+  background-color: #555;
+}
+
+#content {
+  padding: 20px;
+}
