@@ -5,22 +5,25 @@ const ollama = new Ollama({
   host: 'http://172.20.96.1:11444'
 })
 
-const MODEL = 'qwen3:0.6b'
+const MODEL = 'gemma3:1b'
 
-export const chat = async (msg?: string) => {
+export async function* chatStream(msg?: string): AsyncGenerator<string, void, unknown> {
   console.log('Chatting with model:', MODEL, 'msg:', msg)
 
   try {
     const response = await ollama.chat({
       model: MODEL,
+      stream: true,
       messages: [{ role: 'user', content: msg || 'Why is the sky blue?' }]
     })
-    console.log(response.message.content)
-    return response.message.content
+
+    for await (const part of response) {
+      process.stdout.write(part.message.content)
+      yield part.message.content
+    }
   } catch (error) {
     console.error('Error during chat:', error)
-    // throw error
-    return 'error'
+    yield 'Error during chat'
   }
 }
 

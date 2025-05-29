@@ -9,13 +9,13 @@
   height: 50px;
   background-color: #1d1d1d;
   color: rgb(238, 238, 238);
-  padding: 0 10px;
   user-select: none; /* Prevent text selection */
   -webkit-app-region: drag; /* Makes the entire bar draggable */
 }
 
 #window-title {
   /* Allow text selection if needed, but usually part of draggable area */
+  margin-left: 15px;
   font-size: 1.5rem;
 }
 
@@ -23,8 +23,9 @@
   -webkit-app-region: no-drag; /* Makes buttons clickable, not draggable */
   background: none;
   border: none;
+  border-radius: 0px;
   color: white;
-  padding: 5px 20px;
+  padding-bottom: 5px;
   cursor: pointer;
   font-size: 25px;
 }

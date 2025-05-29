@@ -1,8 +1,23 @@
 import { electronAPI } from '@electron-toolkit/preload'
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
-const api = {}
+const api = {
+  getResponseStream: (msg, callback) => {
+    const { port1, port2 } = new MessageChannel()
+
+    // We send one end of the port to the main process ...
+    ipcRenderer.postMessage('send-chat-message', { message: msg }, [port2])
+
+    // ... and we hang on to the other end. The main process will send messages
+    // to its end of the port, and close it when it's finished.
+    port1.onmessage = (event) => {
+      callback(event.data)
+    }
+  }
+}
+
+export type ApiType = typeof api
 
 // Use `contextBridge` APIs to expose Electron APIs to
 // renderer only if context isolation is enabled, otherwise

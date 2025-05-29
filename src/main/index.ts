@@ -2,7 +2,7 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import { chat } from './llm'
+import { chatStream } from './llm'
 
 function createWindow(): void {
   // Create the browser window.
@@ -59,12 +59,31 @@ app.whenReady().then(() => {
   ipcMain.handle('chat', async (event, message) => {
     console.log('Received chat message:', message)
     try {
-      const response = await chat(message)
-      return { success: true, data: response }
+      return { success: true, data: message }
     } catch (error) {
       console.error('Chat error:', error)
       return { success: false, error: error instanceof Error ? error.message : String(error) }
     }
+  })
+
+  // streaming
+  ipcMain.on('send-chat-message', async (event, request) => {
+    // The renderer has sent us a MessagePort that it wants us to send our
+    // response over.
+    const [replyPort] = event.ports
+
+    // Here we send the messages synchronously, but we could just as easily store
+    // the port somewhere and send messages asynchronously.
+    const responses = await chatStream(request.message)
+    for await (const part of responses) {
+      replyPort.postMessage(part)
+    }
+
+    // We close the port when we're done to indicate to the other end that we
+    // won't be sending any more messages. This isn't strictly necessary--if we
+    // didn't explicitly close the port, it would eventually be garbage
+    // collected, which would also trigger the 'close' event in the renderer.
+    replyPort.close()
   })
 
   createWindow()
