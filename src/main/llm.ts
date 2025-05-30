@@ -23,7 +23,7 @@ export async function* chatStream(msg?: string): AsyncGenerator<string, void, un
     }
   } catch (error) {
     console.error('Error during chat:', error)
-    yield 'Error during chat'
+    yield 'Error during chat, bye'
   }
 }
 

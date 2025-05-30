@@ -1,0 +1,32 @@
+.dialog {
+  margin: 20px 150px;
+}
+
+.chat-message {
+  /* font-family: 'Kirang Haerang', system-ui; */
+  /* font-family: 'Zain', sans-serif; */
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.2rem;
+  line-height: 120%;
+  font-weight: 300;
+  color: #c7c7c7;
+  margin-bottom: 10px;
+  overflow-wrap: break-word;
+}
+
+.assistant-message li {
+  margin-top: 4px;
+}
+
+.assistant-message p {
+  margin-top: 12px;
+}
+
+.user-message {
+  background-color: #2c4026;
+  font-size: 1.4rem;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 5px 10px;
+  display: inline-block;
+}

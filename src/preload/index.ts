@@ -3,7 +3,7 @@ import { contextBridge, ipcRenderer } from 'electron'
 
 // Custom APIs for renderer
 const api = {
-  getResponseStream: (msg, callback) => {
+  getResponseStream: (msg, callback, onclose?) => {
     const { port1, port2 } = new MessageChannel()
 
     // We send one end of the port to the main process ...
@@ -14,6 +14,10 @@ const api = {
     port1.onmessage = (event) => {
       callback(event.data)
     }
+
+    port1.addEventListener('close', () => {
+      onclose && onclose()
+    })
   }
 }
 

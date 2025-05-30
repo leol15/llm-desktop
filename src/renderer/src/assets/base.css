@@ -1,8 +1,8 @@
 :root {
-  --c-bg-base: #1f1f1f;
-  --c-bg-container: #393939;
+  --c-bg-base: #141414;
+  --c-bg-container: #2c2c2c;
   --c-bg-highlight: #040404;
-  --c-text-1: #e0e0e0;
+  --c-text-1: #d0d0d0;
 }
 
 *,
@@ -10,9 +10,6 @@
 *::after {
   box-sizing: border-box;
   margin: 0;
-  font-weight: normal;
-  font-family: 'Ubuntu', sans-serif;
-  color: white;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -23,4 +20,5 @@ body {
   color: var(--c-text-1);
   background: var(--c-bg-base);
   line-height: 1.6;
+  font-family: 'Faculty Glyphic', sans-serif;
 }
