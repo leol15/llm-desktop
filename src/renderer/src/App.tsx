@@ -1,57 +1,35 @@
+import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { KeyboardEvent, useRef } from 'react'
 import { AiOutlineClear } from 'react-icons/ai'
 import { GoArrowUpLeft } from 'react-icons/go'
 import { useDispatch } from 'react-redux'
+import type { AnyAction } from 'redux'
 import { Dialog } from './components/Dialog'
 import { FramHeader } from './components/FramHeader'
-import { appendMessage, createMessage, resetDialog } from './redux/activeDialogSlice'
+import { sendChatMessage } from './redux/actions'
+import { resetDialog } from './redux/activeDialogSlice'
+import type { RootState } from './redux/store'
 
 function App(): React.JSX.Element {
-  const dispatch = useDispatch()
+  const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch()
 
-  const ipcHandle = (): void => window.electron.ipcRenderer.send('ping')
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
   const clearDialog = () => {
     dispatch(resetDialog())
   }
 
-  const sendChatMessage = (): void => {
+  const sendInput = (): void => {
     if (!inputRef.current) return
     const inputMsg = inputRef.current?.value
     inputRef.current.value = '' // Clear the input field after sending
-    // create a new message
-    const userMessageThunk = createMessage({
-      content: inputMsg,
-      sender: 'user',
-      status: 'complete'
-    })
-    dispatch(userMessageThunk)
-
-    // create bot message
-    const botMessageThunk = createMessage({
-      content: '',
-      sender: 'assistant',
-      status: 'complete'
-    })
-    const id: string = dispatch(botMessageThunk)
-
-    const receiveChatStream = (data: string) => {
-      dispatch(appendMessage({ id, extra: data, status: 'in-progress' }))
-    }
-
-    const receiveChatStreamEnd = () => {
-      console.log('Stream ended')
-      dispatch(appendMessage({ id, extra: '', status: 'complete' }))
-    }
-
-    window.api.getResponseStream(inputMsg, receiveChatStream, receiveChatStreamEnd)
+    dispatch(sendChatMessage(inputMsg))
   }
 
   const handleInput = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault() // Prevents the default newline behavior
-      sendChatMessage()
+      sendInput()
     }
     const ele = e.currentTarget
     setTimeout(() => {
@@ -78,7 +56,7 @@ function App(): React.JSX.Element {
             <button id="clear-dialog" onClick={clearDialog}>
               <AiOutlineClear />
             </button>
-            <button id="send-chat" onClick={sendChatMessage}>
+            <button id="send-chat" onClick={sendInput}>
               <GoArrowUpLeft />
             </button>
           </div>

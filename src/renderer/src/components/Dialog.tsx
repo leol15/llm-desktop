@@ -11,8 +11,6 @@ export const Dialog = (): React.JSX.Element => {
 
   const scrollEnabled = useRef(true)
   useEffect(() => {
-    console.log('Updated dialog status:', dialogStatus)
-
     if (dialogStatus === 'updating') {
       scrollEnabled.current = true
     }

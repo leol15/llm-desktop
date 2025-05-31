@@ -48,3 +48,8 @@ Find windows host address in wsl2 (WSL network access mode: NAT):
 ```
 ip route show | grep -i default | awk '{ print $3 }'
 ```
+
+### TODO
+
+- MCP integration
+- RAG & Memory

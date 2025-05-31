@@ -2,6 +2,7 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
+import { GetChatResponseStreamHandler, StreamApis } from '../types/apiTypes'
 import { chatStream } from './llm'
 
 function createWindow(): void {
@@ -58,8 +59,7 @@ app.whenReady().then(() => {
   ipcMain.on('ping', () => console.log('pong'))
 
   // Handle chat requests with response
-  ipcMain.handle('chat', async (event, message) => {
-    console.log('Received chat message:', message)
+  ipcMain.handle('chat', async (_event, message) => {
     try {
       return { success: true, data: message }
     } catch (error) {
@@ -69,24 +69,35 @@ app.whenReady().then(() => {
   })
 
   // streaming
-  ipcMain.on('send-chat-message', async (event, request) => {
-    // The renderer has sent us a MessagePort that it wants us to send our
-    // response over.
-    const [replyPort] = event.ports
+  const handleGetResponseStream = <Req, StreamChunk>(
+    api: StreamApis,
+    chunkGenerator: (req: Req) => AsyncGenerator<StreamChunk, void, unknown>
+  ): void => {
+    // streaming
+    ipcMain.on(api, async (event, request: Req) => {
+      // The renderer has sent us a MessagePort that it wants us to send our
+      // response over.
+      const [replyPort] = event.ports
 
-    // Here we send the messages synchronously, but we could just as easily store
-    // the port somewhere and send messages asynchronously.
-    const responses = await chatStream(request.message)
-    for await (const part of responses) {
-      replyPort.postMessage(part)
-    }
+      // Here we send the messages synchronously, but we could just as easily store
+      // the port somewhere and send messages asynchronously.
+      const responses = await chunkGenerator(request)
+      for await (const part of responses) {
+        replyPort.postMessage(part)
+      }
 
-    // We close the port when we're done to indicate to the other end that we
-    // won't be sending any more messages. This isn't strictly necessary--if we
-    // didn't explicitly close the port, it would eventually be garbage
-    // collected, which would also trigger the 'close' event in the renderer.
-    replyPort.close()
-  })
+      // We close the port when we're done to indicate to the other end that we
+      // won't be sending any more messages. This isn't strictly necessary--if we
+      // didn't explicitly close the port, it would eventually be garbage
+      // collected, which would also trigger the 'close' event in the renderer.
+      replyPort.close()
+    })
+  }
+
+  handleGetResponseStream(
+    StreamApis.GET_CHAT_RESPONSE_STREAM,
+    chatStream as GetChatResponseStreamHandler
+  )
 
   createWindow()
 
