@@ -2,6 +2,12 @@ export enum StreamApis {
   GET_CHAT_RESPONSE_STREAM = 'GET_CHAT_RESPONSE_STREAM'
 }
 
+export type StreamApiClientType<Input, StreamChunkType> = (
+  messages: Input,
+  handleStreamPart: (part: StreamChunkType) => void,
+  handleStreamClose?: () => void
+) => void
+
 export interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -16,20 +22,13 @@ export interface ChatResponsePart {
   eval_count?: number
   eval_duration?: number
 }
-// export type GetChatResponseStreamApi = (
-//   messages: Message[],
-//   handleStreamPart: (part: ChatResponsePart) => void,
-//   handleStreamClose?: () => void
-// ) => void
+export interface GetChatResponseInput {
+  messages: Message[]
+  model: string
+}
 
-export type StreamApiClientType<Input, StreamChunkType> = (
-  messages: Input,
-  handleStreamPart: (part: StreamChunkType) => void,
-  handleStreamClose?: () => void
-) => void
-
-export type GetChatResponseStreamApi = StreamApiClientType<Message[], ChatResponsePart>
+export type GetChatResponseStreamApi = StreamApiClientType<GetChatResponseInput, ChatResponsePart>
 
 export type GetChatResponseStreamHandler = (
-  req: Message[]
+  input: GetChatResponseInput
 ) => AsyncGenerator<ChatResponsePart, void, unknown>

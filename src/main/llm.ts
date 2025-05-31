@@ -15,15 +15,15 @@ export async function* chatStream(
     'Chatting with model:',
     MODEL,
     'msg:',
-    input.reduce((acc, msg) => acc + msg.content, '').length,
+    input.messages.reduce((acc, msg) => acc + msg.content, '').length,
     'chars'
   )
 
   try {
     const response = await ollama.chat({
-      model: MODEL,
+      model: input.model ?? MODEL,
       stream: true,
-      messages: input
+      messages: input.messages
       // messages: [{ role: 'user', content: msg }]
     })
 

@@ -1,9 +1,10 @@
+import { MODELS } from '@renderer/constants'
 import { ChatResponsePart, Message } from 'src/types/apiTypes'
 import { appendMessage, createMessage } from './activeDialogSlice'
 import { RootState } from './store'
 
 export const sendChatMessage =
-  (newUserMessage: string) =>
+  (newUserMessage: string, model: string = MODELS.GEMMA_3_1B.id) =>
   (dispatch, getState: () => RootState): void => {
     const userMessageThunk = createMessage({
       content: newUserMessage,
@@ -18,7 +19,6 @@ export const sendChatMessage =
       role: messageById[id].sender,
       content: messageById[id].content
     }))
-    console.log('current messages', messages)
 
     // create bot message
     const botMessageThunk = createMessage({
@@ -36,5 +36,5 @@ export const sendChatMessage =
       }
     }
 
-    window.api.getChatResponseStream(messages, receiveChatStream)
+    window.api.getChatResponseStream({ messages, model }, receiveChatStream)
   }

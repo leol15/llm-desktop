@@ -19,15 +19,22 @@
   font-size: 1.5rem;
 }
 
+#window-controls {
+  display: flex;
+  align-items: center;
+}
+
 #window-controls button {
   -webkit-app-region: no-drag; /* Makes buttons clickable, not draggable */
   background: none;
   border: none;
   border-radius: 0px;
   color: white;
-  padding-bottom: 5px;
+  padding: 10px;
   cursor: pointer;
   font-size: 25px;
+  display: flex;
+  align-items: center;
 }
 
 #window-controls button:hover {

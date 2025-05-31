@@ -61,6 +61,18 @@ h1 {
 
 #chat-action-bar button {
   font-size: 24px;
+  background-color: var(--c-bg-highlight);
+  color: var(--c-text-1);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.2s ease-in-out;
+}
+
+#chat-action-bar button:hover {
+  color: var(--c-bg-highlight);
+  background-color: var(--c-text-1);
 }
 
 #send-chat {
@@ -71,12 +83,50 @@ h1 {
   padding: 10px 11px 4px 11px;
 }
 
-button {
+#chat-action-bar .right {
+  display: flex;
+  align-items: center;
+}
+
+#change-model {
+  background-color: transparent;
+  margin-right: 20px;
+  padding: 10px 10px 10px 5px;
+  font-size: 0.9rem !important;
+  display: flex;
+  align-items: center;
+}
+
+#change-model .model-name {
+  padding-left: 5px;
+}
+
+#model-select-dropdown {
+  position: relative;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#model-options {
+  position: absolute;
+  bottom: 100%;
+  left: 0px;
+  display: flex;
+  flex-direction: column;
+}
+
+#model-options button {
+  width: max-content;
+  font-size: 16px;
+  border-radius: 0;
+  text-align: left;
+  padding: 4px 20px;
+  border: 1px solid var(--c-bg-container);
+}
+
+#change-model:hover {
   background-color: var(--c-bg-highlight);
   color: var(--c-text-1);
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.2rem;
 }
