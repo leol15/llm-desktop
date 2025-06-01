@@ -1,10 +1,12 @@
 import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { KeyboardEvent, useRef, useState } from 'react'
 import { AiOutlineClear } from 'react-icons/ai'
+import { BiLoaderCircle } from 'react-icons/bi'
+import { FaRegCircleStop } from 'react-icons/fa6'
 import { GoArrowUpLeft } from 'react-icons/go'
 import { MdOutlineSummarize } from 'react-icons/md'
 import { RiArrowRightSFill, RiArrowUpSFill } from 'react-icons/ri'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import type { AnyAction } from 'redux'
 import { Dialog } from './components/Dialog'
 import { FramHeader } from './components/FramHeader'
@@ -20,15 +22,21 @@ function App(): React.JSX.Element {
 
   const [chatModel, setChatModel] = useState(MODELS.GEMMA_3_1B)
   const [modelOptionsOpen, setModelOptionsOpen] = useState(false)
+  const chatDialogLoading = useSelector(
+    (state: RootState) => state.activeDialog.status === 'updating'
+  )
+  const [inputHasContent, setInputHasContent] = useState(false)
 
   const clearDialog = () => {
     dispatch(resetDialog())
   }
 
   const sendInput = (): void => {
+    console.log('Sending input...')
     if (!inputRef.current) return
     const inputMsg = inputRef.current?.value
     if (!inputMsg || !inputMsg.trim()) return
+    if (chatDialogLoading) return
     inputRef.current.value = '' // Clear the input field after sending
     dispatch(sendChatMessage(inputMsg, chatModel.id))
   }
@@ -51,6 +59,10 @@ function App(): React.JSX.Element {
     dispatch(smmarizeChatMessage(chatModel.id))
   }
 
+  const stopChat = (): void => {
+    window.api.stopChat()
+  }
+
   return (
     <>
       <FramHeader />
@@ -63,10 +75,18 @@ function App(): React.JSX.Element {
             ref={inputRef}
             placeholder="How can I help you today?"
             onKeyDown={(e) => handleInput(e)}
+            onChange={(e) => {
+              setInputHasContent(e.currentTarget.value.trim().length > 0)
+            }}
             rows={2}
           />
           <div id="chat-action-bar">
             <div className="left">
+              {chatDialogLoading && (
+                <button onClick={stopChat} id="stop-chat">
+                  <FaRegCircleStop />
+                </button>
+              )}
               <button id="clear-dialog" onClick={clearDialog}>
                 <AiOutlineClear />
               </button>
@@ -94,8 +114,13 @@ function App(): React.JSX.Element {
                   ))}
                 </div>
               </div>
-              <button id="send-chat" onClick={sendInput}>
-                <GoArrowUpLeft />
+              <button
+                id="send-chat"
+                className={chatDialogLoading ? 'loading' : ''}
+                disabled={chatDialogLoading || !inputHasContent}
+                onClick={sendInput}
+              >
+                {chatDialogLoading ? <BiLoaderCircle /> : <GoArrowUpLeft />}
               </button>
             </div>
           </div>

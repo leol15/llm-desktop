@@ -1,6 +1,9 @@
 import { contextBridge, ipcRenderer } from 'electron'
 import {
+  AsyncApiClientType,
+  AsyncApis,
   GetChatResponseStreamApi,
+  StopChatApi,
   StreamApiClientType,
   StreamApis,
   SummarizeChatStreamApi
@@ -17,6 +20,16 @@ const passStreamRequestToMain =
     (a, b, c) =>
       getResponseStream(api, a, b, c)
 
+type GetAsyncTypeA<T> = T extends AsyncApiClientType<infer A, unknown> ? A : never
+type GetAsyncTypeB<T> = T extends AsyncApiClientType<unknown, infer B> ? B : never
+const passRequestToMain =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  <T extends AsyncApiClientType<any, any>>(
+      api: AsyncApis
+    ): AsyncApiClientType<GetAsyncTypeA<T>, GetAsyncTypeB<T>> =>
+    (a) =>
+      getResponse(api, a)
+
 // Custom APIs for renderer
 const api = {
   getChatResponseStream: passStreamRequestToMain<GetChatResponseStreamApi>(
@@ -25,6 +38,7 @@ const api = {
   summarizeDialogStream: passStreamRequestToMain<SummarizeChatStreamApi>(
     StreamApis.SUMMARIZE_CHAT_STREAM
   ),
+  stopChat: passRequestToMain<StopChatApi>(AsyncApis.STOP_CHAT),
   // TODO
   invoke: <Req, Res>(api: string, request: Req): Promise<Res> => {
     return ipcRenderer.invoke(api, request)
@@ -73,4 +87,14 @@ function getResponseStream<Input, Output>(
   port1.addEventListener('close', () => {
     onclose && onclose()
   })
+}
+
+function getResponse<Input, Output>(api: AsyncApis, input: Input): Promise<Output> {
+  return ipcRenderer
+    .invoke(api, input)
+    .then((response: Output) => response)
+    .catch((error: Error) => {
+      console.error(`Error invoking API ${api}:`, error)
+      throw error
+    })
 }

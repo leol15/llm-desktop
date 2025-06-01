@@ -1,5 +1,9 @@
 import { Ollama } from 'ollama'
-import { GetChatResponseStreamHandler, SummarizeChatStreamHandler } from '../types/apiTypes'
+import {
+  GetChatResponseStreamHandler,
+  StopChatHandler,
+  SummarizeChatStreamHandler
+} from '../types/apiTypes'
 import { getSummaryTemplate, SUMMARIZE_CHATS_TEMPLATE_SYSTEM_TEMPLATE } from './templates'
 
 // Configure Ollama with custom host and port
@@ -12,9 +16,10 @@ const MODEL = 'gemma3:1b'
 export async function* chatStream(
   input: Parameters<GetChatResponseStreamHandler>[0]
 ): ReturnType<GetChatResponseStreamHandler> {
+  const model = input.model ?? MODEL
   console.log(
     'Chatting with model:',
-    MODEL,
+    model,
     'msg:',
     input.messages.reduce((acc, msg) => acc + msg.content, '').length,
     'chars'
@@ -22,7 +27,7 @@ export async function* chatStream(
 
   try {
     const response = await ollama.chat({
-      model: input.model ?? MODEL,
+      model: model,
       stream: true,
       messages: input.messages
       // messages: [{ role: 'user', content: msg }]
@@ -45,13 +50,9 @@ export async function* chatStream(
       }
     }
   } catch (error) {
-    console.error('Error during chat:', error)
-    yield { content: 'Error during chat, bye', done: true }
+    yield streamErrorHandler(error)
   }
 }
-
-// Export the configured ollama instance for use in other parts of the app
-export { ollama }
 
 export async function* summarizeChatStream(
   input: Parameters<SummarizeChatStreamHandler>[0]
@@ -90,7 +91,29 @@ export async function* summarizeChatStream(
       }
     }
   } catch (error) {
-    console.error('Error during chat:', error)
-    yield { content: 'Error during chat, bye', done: true }
+    yield streamErrorHandler(error)
   }
 }
+
+function streamErrorHandler(error) {
+  if (
+    typeof error === 'object' &&
+    error !== null &&
+    'name' in error &&
+    (error as { name: string }).name === 'AbortError'
+  ) {
+    console.log('Stream aborted by user.')
+    return { content: '[stopped]', done: true }
+  } else {
+    console.error('Error during chat:', error)
+    return { content: 'Error during chat, bye', done: true }
+  }
+}
+
+export const stopChatStream: StopChatHandler = () => {
+  console.log('Chat stream stopped')
+  ollama.abort()
+}
+
+// Export the configured ollama instance for use in other parts of the app
+export { ollama }

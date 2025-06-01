@@ -3,11 +3,13 @@ import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
 import {
+  AsyncApis,
   GetChatResponseStreamHandler,
+  StopChatHandler,
   StreamApis,
   SummarizeChatStreamHandler
 } from '../types/apiTypes'
-import { chatStream, summarizeChatStream } from './llm'
+import { chatStream, stopChatStream, summarizeChatStream } from './llm'
 
 function createWindow(): void {
   // Create the browser window.
@@ -98,6 +100,24 @@ app.whenReady().then(() => {
     })
   }
 
+  // non-streaming
+  const handleGetResponse = <Req, Res>(
+    api: AsyncApis,
+    responseHandler: (req: Req) => Promise<Res> | Res
+  ): void => {
+    ipcMain.handle(api, async (_event, request: Req) => {
+      try {
+        return await responseHandler(request)
+      } catch (error) {
+        console.error(`Error handling ${api}:`, error)
+        return {
+          success: false,
+          error: error instanceof Error ? error.message : String(error)
+        }
+      }
+    })
+  }
+
   handleGetResponseStream(
     StreamApis.GET_CHAT_RESPONSE_STREAM,
     chatStream as GetChatResponseStreamHandler
@@ -107,6 +127,8 @@ app.whenReady().then(() => {
     StreamApis.SUMMARIZE_CHAT_STREAM,
     summarizeChatStream as SummarizeChatStreamHandler
   )
+
+  handleGetResponse(AsyncApis.STOP_CHAT, stopChatStream as StopChatHandler)
 
   createWindow()
 

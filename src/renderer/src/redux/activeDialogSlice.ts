@@ -47,6 +47,7 @@ export const activeDialogSlice = createSlice({
       const message = { ...action.payload }
       state.messages.push(message.id)
       state.messageById[action.payload.id] = message
+      state.status = message.status === 'in-progress' ? 'updating' : 'idle'
       state.chatCount += 1
     },
     appendMessage: (state, action: PayloadAction<AppendMessagePayload>) => {

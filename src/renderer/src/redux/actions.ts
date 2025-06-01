@@ -24,13 +24,13 @@ export const sendChatMessage =
     const botMessageThunk = createMessage({
       content: '',
       sender: 'assistant',
-      status: 'complete'
+      status: 'in-progress'
     })
     const id: string = dispatch(botMessageThunk)
 
     const receiveChatStream = (data: ChatResponsePart): void => {
       if (data.done) {
-        dispatch(appendMessage({ id, extra: '', status: 'complete', info: data }))
+        dispatch(appendMessage({ id, extra: data.content, status: 'complete', info: data }))
       } else {
         dispatch(appendMessage({ id, extra: data.content, status: 'in-progress' }))
       }

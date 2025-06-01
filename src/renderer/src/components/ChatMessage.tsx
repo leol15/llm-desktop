@@ -18,7 +18,6 @@ const to2Digit = (num?: number): string => {
 }
 
 export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {
-  // console.log('ChatMessage:', prop.message)
   const message = useSelector((state: RootState) => state.activeDialog.messageById[prop.message])
   const info = useSelector((state: RootState) => state.activeDialog.messageInfoById[prop.message])
   const cssClass = message.sender === 'user' ? 'user-message' : 'assistant-message'
@@ -29,10 +28,11 @@ export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {
       {info && (
         <div className="message-info">
           <span>
-            <FaArrowUp /> {info.prompt_eval_count} ({to2Digit(info.prompt_eval_duration)}s){' '}
+            <FaArrowUp /> {info.prompt_eval_count ?? 0} ({to2Digit(info.prompt_eval_duration)}
+            s){' '}
           </span>
           <span>
-            <FaArrowDown /> {info.eval_count} ({to2Digit(info.eval_duration)}s){' '}
+            <FaArrowDown /> {info.eval_count ?? 0} ({to2Digit(info.eval_duration)}s){' '}
           </span>
           <span>
             <MdOutlineAccessTime /> {to2Digit(info.total_duration)}s{' '}

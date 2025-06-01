@@ -2,6 +2,11 @@ export enum StreamApis {
   GET_CHAT_RESPONSE_STREAM = 'GET_CHAT_RESPONSE_STREAM',
   SUMMARIZE_CHAT_STREAM = 'SUMMARIZE_CHAT_STREAM'
 }
+export enum AsyncApis {
+  STOP_CHAT = 'STOP_CHAT'
+}
+
+export type AsyncApiClientType<Input, Output> = (intput: Input) => Promise<Output>
 
 export type StreamApiClientType<Input, StreamChunkType> = (
   messages: Input,
@@ -45,3 +50,7 @@ export type SummarizeChatStreamApi = StreamApiClientType<
 export type SummarizeChatStreamHandler = (
   input: SummarizeChatStreamApiInput
 ) => AsyncGenerator<ChatResponsePart, void, unknown>
+
+export type StopChatApi = AsyncApiClientType<void, void>
+
+export type StopChatHandler = () => void
