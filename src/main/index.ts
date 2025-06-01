@@ -2,8 +2,12 @@ import { electronApp, is, optimizer } from '@electron-toolkit/utils'
 import { app, BrowserWindow, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import { GetChatResponseStreamHandler, StreamApis } from '../types/apiTypes'
-import { chatStream } from './llm'
+import {
+  GetChatResponseStreamHandler,
+  StreamApis,
+  SummarizeChatStreamHandler
+} from '../types/apiTypes'
+import { chatStream, summarizeChatStream } from './llm'
 
 function createWindow(): void {
   // Create the browser window.
@@ -97,6 +101,11 @@ app.whenReady().then(() => {
   handleGetResponseStream(
     StreamApis.GET_CHAT_RESPONSE_STREAM,
     chatStream as GetChatResponseStreamHandler
+  )
+
+  handleGetResponseStream(
+    StreamApis.SUMMARIZE_CHAT_STREAM,
+    summarizeChatStream as SummarizeChatStreamHandler
   )
 
   createWindow()

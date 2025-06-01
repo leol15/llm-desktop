@@ -2,13 +2,14 @@ import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { KeyboardEvent, useRef, useState } from 'react'
 import { AiOutlineClear } from 'react-icons/ai'
 import { GoArrowUpLeft } from 'react-icons/go'
+import { MdOutlineSummarize } from 'react-icons/md'
 import { RiArrowRightSFill, RiArrowUpSFill } from 'react-icons/ri'
 import { useDispatch } from 'react-redux'
 import type { AnyAction } from 'redux'
 import { Dialog } from './components/Dialog'
 import { FramHeader } from './components/FramHeader'
 import { MODELS } from './constants'
-import { sendChatMessage } from './redux/actions'
+import { sendChatMessage, smmarizeChatMessage } from './redux/actions'
 import { resetDialog } from './redux/activeDialogSlice'
 import type { RootState } from './redux/store'
 
@@ -44,6 +45,12 @@ function App(): React.JSX.Element {
     }, 1)
   }
 
+  const summarizeDialog = (): void => {
+    // Placeholder for summarize dialog functionality
+    console.log('Summarize dialog clicked')
+    dispatch(smmarizeChatMessage(chatModel.id))
+  }
+
   return (
     <>
       <FramHeader />
@@ -59,9 +66,14 @@ function App(): React.JSX.Element {
             rows={2}
           />
           <div id="chat-action-bar">
-            <button id="clear-dialog" onClick={clearDialog}>
-              <AiOutlineClear />
-            </button>
+            <div className="left">
+              <button id="clear-dialog" onClick={clearDialog}>
+                <AiOutlineClear />
+              </button>
+              <button id="summarize-dialog" onClick={summarizeDialog}>
+                <MdOutlineSummarize />
+              </button>
+            </div>
             <div className="right">
               <div id="model-select-dropdown">
                 <button id="change-model" onClick={() => setModelOptionsOpen(!modelOptionsOpen)}>

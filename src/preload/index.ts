@@ -1,5 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron'
-import { GetChatResponseStreamApi, StreamApiClientType, StreamApis } from '../types/apiTypes'
+import {
+  GetChatResponseStreamApi,
+  StreamApiClientType,
+  StreamApis,
+  SummarizeChatStreamApi
+} from '../types/apiTypes'
 
 // helper types to forward any request to backend
 type GetTypeA<T> = T extends StreamApiClientType<infer A, unknown> ? A : never
@@ -16,6 +21,9 @@ const passStreamRequestToMain =
 const api = {
   getChatResponseStream: passStreamRequestToMain<GetChatResponseStreamApi>(
     StreamApis.GET_CHAT_RESPONSE_STREAM
+  ),
+  summarizeDialogStream: passStreamRequestToMain<SummarizeChatStreamApi>(
+    StreamApis.SUMMARIZE_CHAT_STREAM
   ),
   // TODO
   invoke: <Req, Res>(api: string, request: Req): Promise<Res> => {

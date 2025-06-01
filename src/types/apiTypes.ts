@@ -1,5 +1,6 @@
 export enum StreamApis {
-  GET_CHAT_RESPONSE_STREAM = 'GET_CHAT_RESPONSE_STREAM'
+  GET_CHAT_RESPONSE_STREAM = 'GET_CHAT_RESPONSE_STREAM',
+  SUMMARIZE_CHAT_STREAM = 'SUMMARIZE_CHAT_STREAM'
 }
 
 export type StreamApiClientType<Input, StreamChunkType> = (
@@ -31,4 +32,16 @@ export type GetChatResponseStreamApi = StreamApiClientType<GetChatResponseInput,
 
 export type GetChatResponseStreamHandler = (
   input: GetChatResponseInput
+) => AsyncGenerator<ChatResponsePart, void, unknown>
+
+export interface SummarizeChatStreamApiInput {
+  messages: Message[]
+  model: string
+}
+export type SummarizeChatStreamApi = StreamApiClientType<
+  SummarizeChatStreamApiInput,
+  ChatResponsePart
+>
+export type SummarizeChatStreamHandler = (
+  input: SummarizeChatStreamApiInput
 ) => AsyncGenerator<ChatResponsePart, void, unknown>

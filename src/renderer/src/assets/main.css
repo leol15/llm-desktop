@@ -68,6 +68,10 @@ h1 {
   cursor: pointer;
   font-size: 1.2rem;
   transition: all 0.2s ease-in-out;
+
+  display: flex;
+  align-items: center;
+  padding: 10px;
 }
 
 #chat-action-bar button:hover {
@@ -75,12 +79,19 @@ h1 {
   background-color: var(--c-text-1);
 }
 
+#chat-action-bar .left {
+  display: flex;
+  align-items: center;
+}
+
+#chat-action-bar .left > * {
+  margin-right: 16px;
+}
+
 #send-chat {
-  padding: 11px 9px 3px 11px;
 }
 
 #clear-dialog {
-  padding: 10px 11px 4px 11px;
 }
 
 #chat-action-bar .right {
@@ -90,7 +101,7 @@ h1 {
 
 #change-model {
   background-color: transparent;
-  margin-right: 20px;
+  margin-right: 16px;
   padding: 10px 10px 10px 5px;
   font-size: 0.9rem !important;
   display: flex;

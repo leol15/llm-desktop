@@ -34,3 +34,43 @@
   display: inline-block;
   margin-top: 10px;
 }
+
+.message-info {
+  border-top: 1px solid var(--c-text-1);
+  font-size: 0.8rem;
+  color: #a1a1a1;
+  margin-top: 5px;
+  letter-spacing: 1px;
+}
+
+.message-info > span {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 8px;
+}
+
+.message-info svg {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+.message-info span:nth-of-type(1) svg {
+  fill: rgb(0, 209, 42);
+}
+
+.message-info span:nth-of-type(2) svg {
+  fill: rgb(0, 187, 255);
+}
+
+.message-info span:nth-of-type(3) svg {
+  fill: rgb(244, 208, 0);
+}
+
+.message-info span:nth-of-type(4) svg {
+  fill: rgb(255, 40, 40);
+}
+
+.message-info:hover {
+  color: var(--c-text-1);
+}
