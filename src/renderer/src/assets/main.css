@@ -1,6 +1,7 @@
 @import './base.css';
 @import './frame-header.css';
 @import './chat.css';
+@import './app-navigation.css';
 
 body {
 }
@@ -9,6 +10,7 @@ body {
 }
 
 #app {
+  position: relative;
 }
 
 h1 {

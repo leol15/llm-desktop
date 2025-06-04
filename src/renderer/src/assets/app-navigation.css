@@ -1,0 +1,58 @@
+#app-navigation {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  box-shadow: var(--c-shadow);
+  height: calc(100vh - 50px);
+  /* border-right: 1px solid black; */
+  box-shadow: 0 0 10px rgb(255, 255, 255);
+  z-index: 10;
+  background-color: var(--c-bg-container);
+}
+
+#app-navigation .nav-toggle {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  transition-duration: 0.2s;
+  background-color: var(--c-bg-base);
+}
+
+#app-navigation .nav-toggle:hover {
+  color: unset;
+  background-color: var(--c-bg-container);
+}
+
+.navigation-container-wrapper {
+  margin-top: 60px;
+  width: 0;
+  height: 100%;
+  overflow: hidden;
+  opacity: 0.1;
+  transition:
+    width 0.15s ease-in-out,
+    opacity 0.15s ease-in-out;
+}
+
+.navigation-container-wrapper.open {
+  width: 250px;
+  opacity: 1;
+}
+
+.navigation-container {
+  width: 250px;
+  padding: 0 6px;
+}
+#app-navigation .menu-item {
+  margin-bottom: 4px;
+  border-radius: 10px;
+  padding: 4px 12px;
+}
+#app-navigation .menu-item:hover {
+  background-color: var(--c-bg-base);
+  cursor: context-menu;
+}
+
+#app-navigation .menu-item.active {
+  background-color: var(--c-bg-base);
+}

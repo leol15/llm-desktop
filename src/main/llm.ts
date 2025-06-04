@@ -29,8 +29,8 @@ export async function* chatStream(
     const response = await ollama.chat({
       model: model,
       stream: true,
-      messages: input.messages
-      // messages: [{ role: 'user', content: msg }]
+      messages: input.messages,
+      keep_alive: '1h'
     })
 
     for await (const part of response) {
@@ -68,6 +68,7 @@ export async function* summarizeChatStream(
   try {
     const response = await ollama.chat({
       model: input.model ?? MODEL,
+      keep_alive: '1h',
       stream: true,
       messages: [
         { role: 'system', content: SUMMARIZE_CHATS_TEMPLATE_SYSTEM_TEMPLATE },

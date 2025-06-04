@@ -9,7 +9,7 @@ import { RiArrowRightSFill, RiArrowUpSFill } from 'react-icons/ri'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AnyAction } from 'redux'
 import { Dialog } from './components/Dialog'
-import { FramHeader } from './components/FramHeader'
+import { getGreeting } from './components/utils'
 import { MODELS } from './constants'
 import { sendChatMessage, smmarizeChatMessage } from './redux/actions'
 import { resetDialog } from './redux/activeDialogSlice'
@@ -20,7 +20,7 @@ function App(): React.JSX.Element {
 
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  const [chatModel, setChatModel] = useState(MODELS.GEMMA_3_1B)
+  const [chatModel, setChatModel] = useState(MODELS.GEMMA_3_12B)
   const [modelOptionsOpen, setModelOptionsOpen] = useState(false)
   const chatDialogLoading = useSelector(
     (state: RootState) => state.activeDialog.status === 'updating'
@@ -32,7 +32,6 @@ function App(): React.JSX.Element {
   }
 
   const sendInput = (): void => {
-    console.log('Sending input...')
     if (!inputRef.current) return
     const inputMsg = inputRef.current?.value
     if (!inputMsg || !inputMsg.trim()) return
@@ -54,8 +53,6 @@ function App(): React.JSX.Element {
   }
 
   const summarizeDialog = (): void => {
-    // Placeholder for summarize dialog functionality
-    console.log('Summarize dialog clicked')
     dispatch(smmarizeChatMessage(chatModel.id))
   }
 
@@ -65,64 +62,61 @@ function App(): React.JSX.Element {
 
   return (
     <>
-      <FramHeader />
-      <div className="app">
-        <h1>Good afternoon, Oreo</h1>
-        <Dialog />
-        <div id="start-chat-container">
-          <textarea
-            id="start-chat"
-            ref={inputRef}
-            placeholder="How can I help you today?"
-            onKeyDown={(e) => handleInput(e)}
-            onChange={(e) => {
-              setInputHasContent(e.currentTarget.value.trim().length > 0)
-            }}
-            rows={2}
-          />
-          <div id="chat-action-bar">
-            <div className="left">
-              {chatDialogLoading && (
-                <button onClick={stopChat} id="stop-chat">
-                  <FaRegCircleStop />
-                </button>
-              )}
-              <button id="clear-dialog" onClick={clearDialog}>
-                <AiOutlineClear />
+      <h1>{`${getGreeting()}`}</h1>
+      <Dialog />
+      <div id="start-chat-container">
+        <textarea
+          id="start-chat"
+          ref={inputRef}
+          placeholder="How can I help you today?"
+          onKeyDown={(e) => handleInput(e)}
+          onChange={(e) => {
+            setInputHasContent(e.currentTarget.value.trim().length > 0)
+          }}
+          rows={2}
+        />
+        <div id="chat-action-bar">
+          <div className="left">
+            {chatDialogLoading && (
+              <button onClick={stopChat} id="stop-chat">
+                <FaRegCircleStop />
               </button>
-              <button id="summarize-dialog" onClick={summarizeDialog}>
-                <MdOutlineSummarize />
+            )}
+            <button id="clear-dialog" onClick={clearDialog}>
+              <AiOutlineClear />
+            </button>
+            <button id="summarize-dialog" onClick={summarizeDialog}>
+              <MdOutlineSummarize />
+            </button>
+          </div>
+          <div className="right">
+            <div id="model-select-dropdown">
+              <button id="change-model" onClick={() => setModelOptionsOpen(!modelOptionsOpen)}>
+                {modelOptionsOpen ? <RiArrowUpSFill /> : <RiArrowRightSFill />}
+                <span className="model-name">{chatModel.name}</span>
               </button>
-            </div>
-            <div className="right">
-              <div id="model-select-dropdown">
-                <button id="change-model" onClick={() => setModelOptionsOpen(!modelOptionsOpen)}>
-                  {modelOptionsOpen ? <RiArrowUpSFill /> : <RiArrowRightSFill />}
-                  <span className="model-name">{chatModel.name}</span>
-                </button>
-                <div id="model-options" className={modelOptionsOpen ? '' : 'hidden'}>
-                  {Object.values(MODELS).map((model) => (
-                    <button
-                      key={model.id}
-                      onClick={() => {
-                        setChatModel(model)
-                        setModelOptionsOpen(false)
-                      }}
-                    >
-                      {model.name}
-                    </button>
-                  ))}
-                </div>
+              <div id="model-options" className={modelOptionsOpen ? '' : 'hidden'}>
+                {Object.values(MODELS).map((model) => (
+                  <button
+                    key={model.id}
+                    onClick={() => {
+                      setChatModel(model)
+                      setModelOptionsOpen(false)
+                    }}
+                  >
+                    {model.name}
+                  </button>
+                ))}
               </div>
-              <button
-                id="send-chat"
-                className={chatDialogLoading ? 'loading' : ''}
-                disabled={chatDialogLoading || !inputHasContent}
-                onClick={sendInput}
-              >
-                {chatDialogLoading ? <BiLoaderCircle /> : <GoArrowUpLeft />}
-              </button>
             </div>
+            <button
+              id="send-chat"
+              className={chatDialogLoading ? 'loading' : ''}
+              disabled={chatDialogLoading || !inputHasContent}
+              onClick={sendInput}
+            >
+              {chatDialogLoading ? <BiLoaderCircle /> : <GoArrowUpLeft />}
+            </button>
           </div>
         </div>
       </div>
