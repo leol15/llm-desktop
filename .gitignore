@@ -5,3 +5,6 @@ out
 .eslintcache
 *.log*
 chroma_db
+llm_desktop.db
+llm_desktop.db-shm
+llm_desktop.db-wal

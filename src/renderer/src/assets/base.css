@@ -3,6 +3,7 @@
   --c-bg-container: #2c2c2c;
   --c-bg-highlight: #040404;
   --c-text-1: #d0d0d0;
+  --c-accent: saddlebrown;
 }
 
 *,
@@ -20,7 +21,7 @@ body {
   color: var(--c-text-1);
   background: var(--c-bg-base);
   line-height: 1.6;
-  font-family: 'Faculty Glyphic', sans-serif;
+  font-family: 'Faculty Glyphic', 'Noto Color Emoji', sans-serif;
 }
 
 button {

@@ -3,9 +3,7 @@
 }
 
 .chat-message {
-  /* font-family: 'Kirang Haerang', system-ui; */
-  /* font-family: 'Zain', sans-serif; */
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Space Grotesk', 'Noto Color Emoji', sans-serif;
   font-size: 1.2rem;
   line-height: 120%;
   font-weight: 300;

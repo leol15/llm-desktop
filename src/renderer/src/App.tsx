@@ -1,10 +1,9 @@
 import type { ThunkDispatch } from '@reduxjs/toolkit'
 import { KeyboardEvent, useRef, useState } from 'react'
-import { AiOutlineClear } from 'react-icons/ai'
 import { BiLoaderCircle } from 'react-icons/bi'
 import { FaRegCircleStop } from 'react-icons/fa6'
 import { GoArrowUpLeft } from 'react-icons/go'
-import { MdOutlineSummarize } from 'react-icons/md'
+import { MdOutlineAddCircleOutline, MdOutlineSummarize } from 'react-icons/md'
 import { RiArrowRightSFill, RiArrowUpSFill } from 'react-icons/ri'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AnyAction } from 'redux'
@@ -15,19 +14,33 @@ import { sendChatMessage, smmarizeChatMessage } from './redux/actions'
 import { resetDialog } from './redux/activeDialogSlice'
 import type { RootState } from './redux/store'
 
+const getDefaultModel = () => {
+  try {
+    const savedModel = window.localStorage.getItem('default_model')
+    return savedModel ? JSON.parse(savedModel) : MODELS.GEMMA_3_12B
+  } catch (e) {
+    console.log(e)
+    return MODELS.GEMMA_3_12B
+  }
+}
+
+const setDefaultModel = (model) => {
+  window.localStorage.setItem('default_model', JSON.stringify(model))
+}
+
 function App(): React.JSX.Element {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch()
 
   const inputRef = useRef<HTMLTextAreaElement>(null)
 
-  const [chatModel, setChatModel] = useState(MODELS.GEMMA_3_12B)
+  const [chatModel, setChatModel] = useState(getDefaultModel())
   const [modelOptionsOpen, setModelOptionsOpen] = useState(false)
   const chatDialogLoading = useSelector(
     (state: RootState) => state.activeDialog.status === 'updating'
   )
   const [inputHasContent, setInputHasContent] = useState(false)
 
-  const clearDialog = () => {
+  const newConversation = () => {
     dispatch(resetDialog())
   }
 
@@ -82,8 +95,8 @@ function App(): React.JSX.Element {
                 <FaRegCircleStop />
               </button>
             )}
-            <button id="clear-dialog" onClick={clearDialog}>
-              <AiOutlineClear />
+            <button onClick={newConversation}>
+              <MdOutlineAddCircleOutline />
             </button>
             <button id="summarize-dialog" onClick={summarizeDialog}>
               <MdOutlineSummarize />
@@ -101,6 +114,7 @@ function App(): React.JSX.Element {
                     key={model.id}
                     onClick={() => {
                       setChatModel(model)
+                      setDefaultModel(model)
                       setModelOptionsOpen(false)
                     }}
                   >

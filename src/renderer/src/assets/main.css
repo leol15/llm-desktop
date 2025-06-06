@@ -22,7 +22,7 @@ h1 {
   padding: 0 20px;
   font-weight: normal;
   font-size: 3rem;
-  border-bottom: 2px solid saddlebrown;
+  border-bottom: 2px solid var(--c-accent);
 }
 
 #start-chat-container {
@@ -44,7 +44,7 @@ h1 {
   outline: none;
   border: none;
   font-size: 1.2rem;
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Space Grotesk', 'Noto Color Emoji', sans-serif;
   letter-spacing: 0.2px;
   color: var(--c-text-1);
   width: 100%;
@@ -180,7 +180,4 @@ h1 {
 #change-model:hover {
   background-color: var(--c-bg-highlight);
   color: var(--c-text-1);
-}
-
-#clear-dialog {
 }

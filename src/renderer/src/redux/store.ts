@@ -1,9 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import activeDialogReducer from './activeDialogSlice'
+import dialogsReducer from './dialogsSlice'
+
 export const store = configureStore({
   reducer: {
-    activeDialog: activeDialogReducer
+    activeDialog: activeDialogReducer,
+    dialogs: dialogsReducer
   }
 })
 

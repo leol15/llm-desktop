@@ -18,6 +18,7 @@ export interface ActiveDialogState {
   messageInfoById: Record<string, MessageInfo>
   chatCount: number
   status: 'updating' | 'idle'
+  createDate?: string
 }
 
 const initialState: ActiveDialogState = {
@@ -43,6 +44,7 @@ export const activeDialogSlice = createSlice({
     addMessage: (state, action: PayloadAction<Message>) => {
       if (state.dialogId === undefined) {
         state.dialogId = crypto.randomUUID() // Assign a new dialog ID if not set
+        state.createDate = new Date().toISOString()
       }
       const message = { ...action.payload }
       state.messages.push(message.id)
@@ -65,9 +67,35 @@ export const activeDialogSlice = createSlice({
       }
     },
     resetDialog: (state) => {
+      state.dialogId = undefined
       state.messageById = {}
       state.messages = []
       state.status = 'idle'
+      state.messageInfoById = {}
+      state.chatCount = 0
+      state.createDate = undefined
+    },
+    setDialog: (
+      state,
+      action: PayloadAction<{
+        dialogId: string
+        messages: [Message, MessageInfo][]
+        createDate: string
+      }>
+    ) => {
+      const { dialogId, messages, createDate } = action.payload
+      state.dialogId = dialogId
+      state.createDate = createDate
+      state.messages = []
+      state.messageById = {}
+      state.messageInfoById = {}
+      state.status = 'idle'
+      state.chatCount = messages.length
+      messages.forEach(([m, info]) => {
+        state.messages.push(m.id)
+        state.messageById[m.id] = m
+        state.messageInfoById[m.id] = info
+      })
     }
   }
 })
@@ -86,6 +114,6 @@ export const createMessage = (payload: CreateMessagePayload) => (dispatch) => {
 }
 
 // Action creators are generated for each case reducer function
-export const { addMessage, appendMessage, resetDialog } = activeDialogSlice.actions
+export const { addMessage, appendMessage, resetDialog, setDialog } = activeDialogSlice.actions
 
 export default activeDialogSlice.reducer

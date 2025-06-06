@@ -5,3 +5,8 @@ export interface Message {
   sender: 'user' | 'assistant'
   status: 'complete' | 'paused' | 'in-progress'
 }
+
+export interface Dialog {
+  id: string
+  title: string
+}

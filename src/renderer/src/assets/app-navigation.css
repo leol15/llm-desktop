@@ -56,3 +56,28 @@
 #app-navigation .menu-item.active {
   background-color: var(--c-bg-base);
 }
+
+#app-navigation .sub-menu-item {
+  border-radius: 10px;
+  margin-top: 6px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#app-navigation .sub-menu-item button {
+  background-color: unset;
+}
+
+#app-navigation .sub-menu-item button:hover svg {
+  fill: var(--c-accent);
+}
+
+#app-navigation .sub-menu-item:hover {
+  background-color: var(--c-bg-container);
+}
+
+#app-navigation .sub-menu-item.active {
+  background-color: var(--c-accent);
+}

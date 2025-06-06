@@ -10,6 +10,9 @@ import {
   SummarizeChatStreamHandler
 } from '../types/apiTypes'
 import { chatStream, stopChatStream, summarizeChatStream } from './llm'
+import { initDb } from './storage'
+
+initDb()
 
 function createWindow(): void {
   // Create the browser window.
