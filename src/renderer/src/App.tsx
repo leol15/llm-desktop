@@ -1,5 +1,5 @@
 import type { ThunkDispatch } from '@reduxjs/toolkit'
-import { KeyboardEvent, useRef, useState } from 'react'
+import React, { useState } from 'react'
 import { BiLoaderCircle } from 'react-icons/bi'
 import { FaRegCircleStop } from 'react-icons/fa6'
 import { GoArrowUpLeft } from 'react-icons/go'
@@ -8,11 +8,15 @@ import { RiArrowRightSFill, RiArrowUpSFill } from 'react-icons/ri'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AnyAction } from 'redux'
 import { Dialog } from './components/Dialog'
+import { TextInput } from './components/TextInput'
 import { getGreeting } from './components/utils'
 import { MODELS } from './constants'
 import { sendChatMessage, smmarizeChatMessage } from './redux/actions'
 import { resetDialog } from './redux/activeDialogSlice'
 import type { RootState } from './redux/store'
+
+const MemoDialog = React.memo(Dialog)
+MemoDialog.displayName = 'MemoDialog'
 
 const getDefaultModel = () => {
   try {
@@ -31,38 +35,22 @@ const setDefaultModel = (model) => {
 function App(): React.JSX.Element {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch()
 
-  const inputRef = useRef<HTMLTextAreaElement>(null)
-
   const [chatModel, setChatModel] = useState(getDefaultModel())
   const [modelOptionsOpen, setModelOptionsOpen] = useState(false)
   const chatDialogLoading = useSelector(
     (state: RootState) => state.activeDialog.status === 'updating'
   )
-  const [inputHasContent, setInputHasContent] = useState(false)
 
   const newConversation = () => {
     dispatch(resetDialog())
   }
 
+  const [chatMsg, setChatMsg] = useState('')
   const sendInput = (): void => {
-    if (!inputRef.current) return
-    const inputMsg = inputRef.current?.value
-    if (!inputMsg || !inputMsg.trim()) return
-    if (chatDialogLoading) return
-    inputRef.current.value = '' // Clear the input field after sending
-    dispatch(sendChatMessage(inputMsg, chatModel.id))
-  }
-
-  const handleInput = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault() // Prevents the default newline behavior
-      sendInput()
-    }
-    const ele = e.currentTarget
-    setTimeout(() => {
-      ele.style.height = 'auto'
-      ele.style.height = ele.scrollHeight + 'px'
-    }, 1)
+    if (chatDialogLoading || !chatMsg || !chatMsg.trim()) return
+    // Clear the input field after sending
+    setChatMsg('')
+    dispatch(sendChatMessage(chatMsg, chatModel.id))
   }
 
   const summarizeDialog = (): void => {
@@ -76,18 +64,9 @@ function App(): React.JSX.Element {
   return (
     <>
       <h1>{`${getGreeting()}`}</h1>
-      <Dialog />
+      <MemoDialog />
       <div id="start-chat-container">
-        <textarea
-          id="start-chat"
-          ref={inputRef}
-          placeholder="How can I help you today?"
-          onKeyDown={(e) => handleInput(e)}
-          onChange={(e) => {
-            setInputHasContent(e.currentTarget.value.trim().length > 0)
-          }}
-          rows={2}
-        />
+        <TextInput value={chatMsg} updateValue={setChatMsg} onEnter={sendInput} />
         <div id="chat-action-bar">
           <div className="left">
             {chatDialogLoading && (
@@ -126,7 +105,7 @@ function App(): React.JSX.Element {
             <button
               id="send-chat"
               className={chatDialogLoading ? 'loading' : ''}
-              disabled={chatDialogLoading || !inputHasContent}
+              disabled={chatDialogLoading || !chatMsg}
               onClick={sendInput}
             >
               {chatDialogLoading ? <BiLoaderCircle /> : <GoArrowUpLeft />}

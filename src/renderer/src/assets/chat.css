@@ -19,6 +19,30 @@
   margin-top: 10px;
 }
 
+.assistant-message code {
+  font-family: monospace;
+}
+
+.assistant-message pre code {
+  font-size: 0.8rem;
+}
+
+.assistant-message p code {
+  font-size: 0.9rem;
+  background-color: #000000;
+  color: white;
+  padding: 0 4px;
+  border-radius: 4px;
+}
+
+.assistant-message pre {
+  background-color: var(--c-bg-container);
+  padding: 0 8px;
+  border-radius: 4px;
+  overflow-x: auto;
+  box-shadow: inset 1px 1px 10px 100 white;
+}
+
 .assistant-message {
   margin-bottom: 10px;
 }

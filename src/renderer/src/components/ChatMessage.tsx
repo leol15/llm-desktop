@@ -1,6 +1,7 @@
+import { MessageInfo } from '@renderer/redux/activeDialogSlice'
 import { RootState } from '@renderer/redux/store'
 import { Message } from '@renderer/redux/types'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { FaArrowDown, FaArrowUp } from 'react-icons/fa'
 import { MdOutlineAccessTime, MdOutlineContentCopy } from 'react-icons/md'
 import { SiSpeedtest } from 'react-icons/si'
@@ -18,9 +19,13 @@ const to2Digit = (num?: number): string => {
   return num.toFixed(2)
 }
 
-export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {
-  const message = useSelector((state: RootState) => state.activeDialog.messageById[prop.message])
-  const info = useSelector((state: RootState) => state.activeDialog.messageInfoById[prop.message])
+const InnerChatMessage = ({
+  message,
+  info
+}: {
+  message: Message
+  info: MessageInfo
+}): React.JSX.Element => {
   const cssClass = message.sender === 'user' ? 'user-message' : 'assistant-message'
 
   const [copied, setCopied] = useState(false)
@@ -30,7 +35,6 @@ export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {
       setTimeout(() => setCopied(false), 2000)
     })
   }
-
   return (
     <div className={`chat-message ${cssClass}`}>
       <ReactMarkdown>{message.content}</ReactMarkdown>
@@ -60,4 +64,13 @@ export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {
       )}
     </div>
   )
+}
+
+const MemoChatMessage = React.memo(InnerChatMessage)
+MemoChatMessage.displayName = 'MemoChatMessage'
+
+export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {
+  const message = useSelector((state: RootState) => state.activeDialog.messageById[prop.message])
+  const info = useSelector((state: RootState) => state.activeDialog.messageInfoById[prop.message])
+  return <MemoChatMessage message={message} info={info} />
 }

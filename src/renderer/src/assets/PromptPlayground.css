@@ -1,0 +1,62 @@
+#prompt-playground {
+  display: flex;
+  height: calc(100vh - 50px);
+  font-family: sans-serif;
+}
+
+.playground-container {
+  display: flex;
+  width: 100%;
+}
+
+.left-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  gap: 1rem;
+}
+
+.left-panel h2 {
+  margin-left: 50px;
+}
+
+.right-panel {
+  flex: 1;
+  padding: 1rem;
+  border-left: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
+
+.system-prompt-input,
+.user-conversation-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  box-sizing: border-box; /* Ensures padding doesn't add to the width */
+}
+
+.system-prompt-input {
+  flex: 1;
+}
+
+.user-conversation-input {
+  flex: 1;
+}
+
+.llm-output-display {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 4px;
+  overflow-y: auto;
+}
+
+.llm-output-display p {
+  margin: 0;
+  white-space: pre-wrap; /* Preserves whitespace and line breaks */
+}

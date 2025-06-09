@@ -7,6 +7,7 @@ import App from './App'
 
 import { Provider } from 'react-redux'
 import AppWrapper from './AppWrapper'
+import { PromptPlayground } from './components/PromptPlayground'
 import { store } from './redux/store'
 
 createRoot(document.getElementById('root')!).render(
@@ -16,7 +17,7 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<AppWrapper />}>
             <Route index element={<App />} />
-            <Route path="prompt-playground" element={<span>promt playgroud</span>} />
+            <Route path="prompt-playground" element={<PromptPlayground />} />
           </Route>
         </Routes>
       </BrowserRouter>

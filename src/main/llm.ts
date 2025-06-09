@@ -33,13 +33,22 @@ export async function* chatStream(
       keep_alive: '1h'
     })
 
+    let lastTime = process.hrtime.bigint()
+    const cachedParts: string[] = []
     for await (const part of response) {
-      // process.stdout.write(part.message.content)
+      const currTime = process.hrtime.bigint()
       if (part.done) {
         console.log('Chat stream done', part)
+      } else if (currTime - lastTime < 15 * 1000 * 1000) {
+        cachedParts.push(part.message.content)
+        continue
       }
+
+      const cachedMsg = cachedParts.join('')
+      cachedParts.length = 0
+      lastTime = currTime
       yield {
-        content: part.message.content,
+        content: cachedMsg + part.message.content,
         done: part.done,
         total_duration: part.total_duration / 1_000_000_000,
         load_duration: part.load_duration / 1_000_000_000,
