@@ -24,7 +24,7 @@ const InnerChatMessage = ({
   info
 }: {
   message: Message
-  info: MessageInfo
+  info: MessageInfo | undefined
 }): React.JSX.Element => {
   const cssClass = message.sender === 'user' ? 'user-message' : 'assistant-message'
 
@@ -66,7 +66,7 @@ const InnerChatMessage = ({
   )
 }
 
-const MemoChatMessage = React.memo(InnerChatMessage)
+export const MemoChatMessage = React.memo(InnerChatMessage)
 MemoChatMessage.displayName = 'MemoChatMessage'
 
 export const ChatMessage = (prop: ChatMessageProps): React.JSX.Element => {

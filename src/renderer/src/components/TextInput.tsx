@@ -1,16 +1,23 @@
 import { KeyboardEvent, useRef } from 'react'
+import '../assets/TextInput.css'
 
 interface TextInputProps {
   value: string
   updateValue: (v: string) => void
-  onEnter: (v: string) => void
+  onEnter?: (v: string) => void
+  placeholder?: string
 }
 
-export function TextInput({ onEnter, value, updateValue }: TextInputProps): React.JSX.Element {
+export function TextInput({
+  onEnter,
+  value,
+  updateValue,
+  placeholder
+}: TextInputProps): React.JSX.Element {
   const inputRef = useRef<HTMLTextAreaElement | null>(null)
 
   const onKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>): void => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (onEnter && e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault() // Prevents the default newline behavior
       onEnter(inputRef.current?.value ?? '')
     }
@@ -28,10 +35,10 @@ export function TextInput({ onEnter, value, updateValue }: TextInputProps): Reac
   return (
     <>
       <textarea
-        className="chat-input"
+        className="text-input"
         value={value}
         ref={inputRef}
-        placeholder="How can I help you today?"
+        placeholder={placeholder ?? 'How can I help you today?'}
         onKeyDown={onKeyDown}
         onInput={(e) => onInput(e)}
         rows={2}

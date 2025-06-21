@@ -53,3 +53,4 @@ ip route show | grep -i default | awk '{ print $3 }'
 
 - MCP integration
 - RAG & Memory
+- add model capabilities: tool, think, image

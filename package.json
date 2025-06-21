@@ -25,6 +25,7 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@modelcontextprotocol/sdk": "^1.13.0",
     "@reduxjs/toolkit": "^2.8.2",
     "@types/better-sqlite3": "^7.6.13",
     "better-sqlite3": "^11.10.0",
@@ -32,7 +33,8 @@
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-redux": "^9.2.0",
-    "react-router": "^7.6.1"
+    "react-router": "^7.6.1",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",

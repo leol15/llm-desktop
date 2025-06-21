@@ -1,0 +1,19 @@
+.text-input {
+  background-color: transparent;
+  outline: none;
+  border: none;
+  font-weight: bold;
+  font-size: 1.3rem !important;
+  font-family: 'Space Grotesk', 'Noto Color Emoji', sans-serif;
+  letter-spacing: 0.2px;
+  background-color: var(--c-bg-container);
+  border-radius: 10px;
+  color: var(--c-text-1);
+  width: 100%;
+  overflow: auto;
+  resize: none;
+
+  display: block;
+  overflow: hidden;
+  resize: none;
+}

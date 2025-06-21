@@ -4,13 +4,13 @@ import { BiLoaderCircle } from 'react-icons/bi'
 import { FaRegCircleStop } from 'react-icons/fa6'
 import { GoArrowUpLeft } from 'react-icons/go'
 import { MdOutlineAddCircleOutline, MdOutlineSummarize } from 'react-icons/md'
-import { RiArrowRightSFill, RiArrowUpSFill } from 'react-icons/ri'
 import { useDispatch, useSelector } from 'react-redux'
 import type { AnyAction } from 'redux'
+import { MODELS } from '../../types/constants'
 import { Dialog } from './components/Dialog'
+import { Dropdown } from './components/pieces/Dropdown'
 import { TextInput } from './components/TextInput'
-import { getGreeting } from './components/utils'
-import { MODELS } from './constants'
+import { getGreeting, getModelByKey, saveModel } from './components/utils'
 import { sendChatMessage, smmarizeChatMessage } from './redux/actions'
 import { resetDialog } from './redux/activeDialogSlice'
 import type { RootState } from './redux/store'
@@ -18,25 +18,12 @@ import type { RootState } from './redux/store'
 const MemoDialog = React.memo(Dialog)
 MemoDialog.displayName = 'MemoDialog'
 
-const getDefaultModel = () => {
-  try {
-    const savedModel = window.localStorage.getItem('default_model')
-    return savedModel ? JSON.parse(savedModel) : MODELS.GEMMA_3_12B
-  } catch (e) {
-    console.log(e)
-    return MODELS.GEMMA_3_12B
-  }
-}
-
-const setDefaultModel = (model) => {
-  window.localStorage.setItem('default_model', JSON.stringify(model))
-}
+const LAST_USED_MODEL_CONFIG_KEY = 'chat_using_model'
 
 function App(): React.JSX.Element {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch()
 
-  const [chatModel, setChatModel] = useState(getDefaultModel())
-  const [modelOptionsOpen, setModelOptionsOpen] = useState(false)
+  const [chatModel, setChatModel] = useState(getModelByKey(LAST_USED_MODEL_CONFIG_KEY))
   const chatDialogLoading = useSelector(
     (state: RootState) => state.activeDialog.status === 'updating'
   )
@@ -74,37 +61,25 @@ function App(): React.JSX.Element {
                 <FaRegCircleStop />
               </button>
             )}
-            <button onClick={newConversation}>
+            <button className="action-button" onClick={newConversation}>
               <MdOutlineAddCircleOutline />
             </button>
-            <button id="summarize-dialog" onClick={summarizeDialog}>
+            <button className="action-button" id="summarize-dialog" onClick={summarizeDialog}>
               <MdOutlineSummarize />
             </button>
           </div>
           <div className="right">
-            <div id="model-select-dropdown">
-              <button id="change-model" onClick={() => setModelOptionsOpen(!modelOptionsOpen)}>
-                {modelOptionsOpen ? <RiArrowUpSFill /> : <RiArrowRightSFill />}
-                <span className="model-name">{chatModel.name}</span>
-              </button>
-              <div id="model-options" className={modelOptionsOpen ? '' : 'hidden'}>
-                {Object.values(MODELS).map((model) => (
-                  <button
-                    key={model.id}
-                    onClick={() => {
-                      setChatModel(model)
-                      setDefaultModel(model)
-                      setModelOptionsOpen(false)
-                    }}
-                  >
-                    {model.name}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <Dropdown
+              options={Object.values(MODELS).map((m) => ({ name: m.name, value: m }))}
+              defaultOption={{ name: chatModel.name, value: chatModel }}
+              select={(model) => {
+                setChatModel(model)
+                saveModel(LAST_USED_MODEL_CONFIG_KEY, model)
+              }}
+            />
             <button
               id="send-chat"
-              className={chatDialogLoading ? 'loading' : ''}
+              className={'action-button ' + (chatDialogLoading ? 'loading' : '')}
               disabled={chatDialogLoading || !chatMsg}
               onClick={sendInput}
             >

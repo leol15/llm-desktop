@@ -61,7 +61,7 @@ h1 {
   justify-content: space-between;
 }
 
-#chat-action-bar button {
+#chat-action-bar .action-button {
   font-size: 24px;
   background-color: var(--c-bg-highlight);
   color: var(--c-text-1);
@@ -76,7 +76,7 @@ h1 {
   padding: 10px;
 }
 
-#chat-action-bar button:hover {
+#chat-action-bar .action-button:hover {
   color: var(--c-bg-highlight);
   background-color: var(--c-text-1);
 }
@@ -133,51 +133,4 @@ h1 {
 }
 #chat-action-bar .right > * {
   margin-left: 16px;
-}
-
-#change-model {
-  background-color: transparent;
-  padding: 10px 10px 10px 5px;
-  font-size: 0.9rem !important;
-  display: flex;
-  align-items: center;
-}
-
-#change-model .model-name {
-  padding-left: 2px;
-}
-
-#change-model svg {
-  width: 20px;
-  height: 20px;
-}
-
-#model-select-dropdown {
-  position: relative;
-}
-
-.hidden {
-  display: none !important;
-}
-
-#model-options {
-  position: absolute;
-  bottom: 100%;
-  left: 0px;
-  display: flex;
-  flex-direction: column;
-}
-
-#model-options button {
-  width: max-content;
-  font-size: 16px;
-  border-radius: 0;
-  text-align: left;
-  padding: 4px 20px;
-  border: 1px solid var(--c-bg-container);
-}
-
-#change-model:hover {
-  background-color: var(--c-bg-highlight);
-  color: var(--c-text-1);
 }

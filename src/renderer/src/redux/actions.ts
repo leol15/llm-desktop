@@ -1,5 +1,5 @@
-import { MODELS } from '@renderer/constants'
 import { ChatResponsePart, Message } from 'src/types/apiTypes'
+import { MODELS } from '../../../types/constants'
 import { appendMessage, createMessage, MessageInfo, setDialog } from './activeDialogSlice'
 import { setDialogs } from './dialogsSlice'
 import { RootState } from './store'

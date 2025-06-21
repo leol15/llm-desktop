@@ -81,3 +81,8 @@
 #app-navigation .sub-menu-item.active {
   background-color: var(--c-accent);
 }
+
+#app-navigation .chats-container {
+  max-height: 300px;
+  overflow-y: scroll;
+}

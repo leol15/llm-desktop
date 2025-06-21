@@ -11,6 +11,10 @@ export const AppNavigation = (): React.JSX.Element => {
   const dispatch: ThunkDispatch<RootState, unknown, AnyAction> = useDispatch()
   useEffect(() => dispatch(getDialogs()), [dispatch])
 
+  useEffect(() => {
+    navigate('/prompt-playground')
+  }, [])
+
   const dialogs = useSelector((state: RootState) => state.dialogs.dialogs)
   const currentDialogId = useSelector((state: RootState) => state.activeDialog.dialogId)
 
@@ -33,7 +37,7 @@ export const AppNavigation = (): React.JSX.Element => {
             }}
           >
             Chats
-            <div>
+            <div className="chats-container">
               {dialogs.map((d) => (
                 <div
                   className={`sub-menu-item ${currentDialogId === d.id ? 'active' : ''}`}

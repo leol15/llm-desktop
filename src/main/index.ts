@@ -17,9 +17,10 @@ initDb()
 function createWindow(): void {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1200,
+    height: 750,
     show: false,
+    resizable: true,
     // frame: false,
     titleBarStyle: 'hidden',
     autoHideMenuBar: true,
